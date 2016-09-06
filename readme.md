@@ -13,5 +13,5 @@ npm install node-sass-tilde-importer --save-dev
 ### Using the node-sass cli
 
 ```sh
-node-sass src/style.scss dest/style.css --importer=./node_modules/node-sass-tilde-importer/index.js
+node-sass style.scss --importer=node_modules/node-sass-tilde-importer
 ```
