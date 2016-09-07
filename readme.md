@@ -2,6 +2,8 @@
 
 > A node-sass custom importer which turns ~ into absolute paths to the nearest parent node_modules directory.
 
+[![Build Status](https://travis-ci.org/matthewdavidson/node-sass-tilde-importer.svg?branch=master)](https://travis-ci.org/matthewdavidson/node-sass-tilde-importer)
+
 ## Install
 
 ```sh
