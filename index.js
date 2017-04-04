@@ -9,7 +9,7 @@ var findParentDir = require('find-parent-dir');
  * @returns file path or false if the file does not exist
  */
 function resolveDeep(targetUrl, sourceFile) {
-  var packageRoot = findParentDir.sync(sourceFile, 'node_modules') || __dirname;
+  var packageRoot = findParentDir.sync(sourceFile, 'node_modules');
   var filePath = path.resolve(packageRoot, 'node_modules', targetUrl);
 
   return fs.existsSync(path.dirname(filePath)) && filePath;
