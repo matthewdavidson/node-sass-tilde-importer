@@ -3,31 +3,28 @@ var fs = require('fs');
 var findParentDir = require('find-parent-dir');
 
 /**
- * Resolves the url in the nearest node_module directory
- * @param {String} targetUrl url to resolve
- * @param {String} sourceFile file which is referring to the targetUrl
- * @returns file path or false if the file does not exist
- */
-function resolveDeep(targetUrl, sourceFile) {
-  var packageRoot = findParentDir.sync(sourceFile, 'node_modules');
-  var filePath = path.resolve(packageRoot, 'node_modules', targetUrl);
-
-  return fs.existsSync(path.dirname(filePath)) && filePath;
-}
-
-/**
  * Resolves the url in the top level node_module directory
  * @param {String} targetUrl url to resolve
+ * @param {String} source file or directory which is the base point resolving targetUrl
  */
-function resolveFlat(targetUrl) {
-  return path.resolve('node_modules', targetUrl);
+function resolve(targetUrl, source) {
+  var packageRoot = findParentDir.sync(source, 'node_modules');
+
+  if (!packageRoot) {
+    return null; // file could not be resolved as npm package
+  }
+
+  var filePath = path.resolve(packageRoot, 'node_modules', targetUrl);
+
+  return fs.existsSync(path.dirname(filePath))
+    ? filePath
+    : resolve(targetUrl, path.dirname(packageRoot));
 }
 
 module.exports = function importer (url, prev, done) {
   if (url[ 0 ] === '~') {
-    var targetUrl = url.substr(1);
-    url = resolveDeep(targetUrl, prev) || resolveFlat(targetUrl);
+    url = resolve(url.substr(1), prev);
   }
 
-  return { file: url };
+  return url && { file: url };
 };
