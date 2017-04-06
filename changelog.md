@@ -6,4 +6,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 1.0.0 - 2017-04-06
 ### Changed
-- Handle flat and nested dependency trees
+- [#1](https://github.com/matthewdavidson/node-sass-tilde-importer/pull/1) Handle flat and nested dependency trees 
