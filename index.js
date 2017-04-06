@@ -1,10 +1,24 @@
 var path = require('path');
+var fs = require('fs');
 var findParentDir = require('find-parent-dir');
+
+function resolve(targetUrl, source) {
+  var packageRoot = findParentDir.sync(source, 'node_modules');
+
+  if (!packageRoot) {
+    return null;
+  }
+
+  var filePath = path.resolve(packageRoot, 'node_modules', targetUrl);
+
+  return fs.existsSync(path.dirname(filePath))
+    ? filePath
+    : resolve(targetUrl, path.dirname(packageRoot));
+}
 
 module.exports = function importer (url, prev, done) {
   if (url[ 0 ] === '~') {
-    var packageRoot = findParentDir.sync(prev, 'node_modules') || __dirname;
-    url = path.resolve(packageRoot, 'node_modules', url.substr(1));
+    url = resolve(url.substr(1), prev);
   }
 
   return { file: url };

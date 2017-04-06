@@ -30,6 +30,7 @@
   "jest": {
     "verbose": true,
     "testRegex": "test\\.js$",
+    "testEnvironment": "node",
     "coverageThreshold": {
       "global": {
         "statements": 75,
