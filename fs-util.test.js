@@ -1,7 +1,7 @@
+jest.mock('fs');
+
 var mockFs = require('fs');
 var fsUtil = require('./fs-util');
-
-jest.mock('fs');
 
 describe('Fs Util', function() {
   beforeEach(function() {

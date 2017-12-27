@@ -1,9 +1,9 @@
+jest.mock('find-parent-dir');
+jest.mock('./fs-util');
+
 var importer = require('./index');
 var mockFsUtil = require('./fs-util');
 var mockFindParentDir = require('find-parent-dir');
-
-jest.mock('find-parent-dir');
-jest.mock('./fs-util');
 
 describe('Importer', function() {
   beforeEach(function() {
