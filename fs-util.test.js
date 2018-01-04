@@ -4,50 +4,34 @@ var mockFs = require('fs');
 var fsUtil = require('./fs-util');
 
 describe('Fs Util', function() {
-  beforeEach(function() {
-    mockFs.existsSync.mockReturnValue(true).mockClear();
-  });
-
-  describe('.isFileImport()', function() {
-    test('mirrors the result of the first file system check', function() {
-      var result = fsUtil.isFileImport('my-module1/test-file');
+  describe('.isDirectory()', function() {
+    test('path is a directory when the it does not have an extension', function() {
+      var result = fsUtil.isDirectory('my-module1/test-dir');
       expect(result).toBeTruthy();
     });
 
-    test('checks the parent directory path for existence', function() {
-      var result = fsUtil.isFileImport('my-module2/test-file');
-      expect(mockFs.existsSync).toBeCalledWith('my-module2');
+    test('path is not a directory when it does have an extension', function() {
+      var result = fsUtil.isDirectory('my-module2/test-file.scss');
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe('.existsSync()', function() {
+    beforeEach(function() {
+      mockFs.existsSync.mockClear();
+    });
+
+    test('mirrors the result of the file system calls', function() {
+      mockFs.existsSync.mockReturnValue(true);
+      expect(fsUtil.existsSync('my-module1/test-file-true')).toBeTruthy();
+
+      mockFs.existsSync.mockReturnValue(false);
+      expect(fsUtil.existsSync('my-module1/test-file-false')).toBeFalsy();
     });
 
     test('caches and reuse the results of file system checks for the same path', function() {
       for (var i = 0; i < 10; i++) {
-        fsUtil.isFileImport('my-module3/test-file');
-      }
-
-      expect(mockFs.existsSync.mock.calls.length).toBe(1);
-    });
-  });
-
-  describe('.isDirectoryImport()', function() {
-    test('returns false if the path contains extension without calling the file system', function() {
-      var result = fsUtil.isDirectoryImport('my-module/test-file.scss');
-      expect(result).toBeFalsy();
-      expect(mockFs.existsSync).not.toBeCalled();
-    });
-
-    test('mirrors the result of the first file system check', function() {
-      var result = fsUtil.isDirectoryImport('my-module/test-dir1');
-      expect(result).toBeTruthy();
-    });
-
-    test('checks the full path for existence', function() {
-      var result = fsUtil.isDirectoryImport('my-module/test-dir2');
-      expect(mockFs.existsSync).toBeCalledWith('my-module/test-dir2');
-    });
-
-    test('caches and reuse the results of file system calls for the same path', function() {
-      for (var i = 0; i < 10; i++) {
-        fsUtil.isDirectoryImport('test-dir3');
+        fsUtil.existsSync('my-module3/test-file');
       }
 
       expect(mockFs.existsSync.mock.calls.length).toBe(1);

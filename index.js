@@ -11,9 +11,9 @@ function resolve(targetUrl, source) {
 
   var filePath = path.resolve(packageRoot, 'node_modules', targetUrl);
 
-  if (fsUtil.isDirectoryImport(filePath)) {
+  if (fsUtil.isDirectory(filePath) && fsUtil.existsSync(filePath)) {
     return path.resolve(filePath, 'index');
-  } else if (fsUtil.isFileImport(filePath)) {
+  } else if (fsUtil.existsSync(path.dirname(filePath))) {
     return filePath;
   }
 

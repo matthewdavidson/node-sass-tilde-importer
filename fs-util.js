@@ -18,15 +18,11 @@ function existsSync(filePath) {
   return IMPORT_CACHE[filePath];
 }
 
-function isDirectoryImport(filePath) {
-  return !path.extname(filePath) && existsSync(filePath);
-}
-
-function isFileImport(filePath) {
-  return existsSync(path.dirname(filePath));
+function isDirectory(filePath) {
+  return !path.extname(filePath);
 }
 
 module.exports = {
-  isDirectoryImport: isDirectoryImport,
-  isFileImport: isFileImport
+  existsSync: existsSync,
+  isDirectory: isDirectory
 };

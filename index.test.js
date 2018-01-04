@@ -7,13 +7,13 @@ var mockFindParentDir = require('find-parent-dir');
 
 describe('Importer', function() {
   beforeEach(function() {
-    mockFsUtil.isDirectoryImport.mockReturnValue(false).mockClear();
-    mockFsUtil.isFileImport.mockReturnValue(false).mockClear();
+    mockFsUtil.isDirectory.mockReturnValue(false).mockClear();
+    mockFsUtil.existsSync.mockReturnValue(true).mockClear();
     mockFindParentDir.sync.mockReturnValue('MOCK_PARENT_DIR').mockClear();
   });
 
   test('resolves to node_modules directory when first character is ~', function() {
-    mockFsUtil.isDirectoryImport.mockReturnValue(true);
+    mockFsUtil.isDirectory.mockReturnValue(true);
     expect(importer('~my-module', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/index'
     });
@@ -24,11 +24,12 @@ describe('Importer', function() {
   });
 
   test('recursively resolve url until package has not been found', function() {
-    var mockFsCheck = mockFsUtil.isFileImport,
+    var mockFsCheck = mockFsUtil.existsSync,
     mockParentDirFinder = mockFindParentDir.sync;
 
     // url can not be resolved up to 10 level
     for (var i = 0; i < 10; i++) {
+      // short circuit evaluation due to mockFsUtil.isDirectory -> false
       mockFsCheck = mockFsCheck.mockReturnValueOnce(false);
       mockParentDirFinder = mockParentDirFinder.mockReturnValueOnce('MOCK_PARENT_DIR' + i);
     }
@@ -51,7 +52,8 @@ describe('Importer', function() {
   });
 
   test('should resolve extensions', function() {
-    mockFsUtil.isFileImport.mockReturnValue(true);
+    mockFsUtil.existsSync.mockReturnValueOnce(true);
+
     expect(importer('~my-module/test.scss', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test.scss'
     });
