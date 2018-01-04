@@ -1,19 +1,17 @@
 jest.mock('find-parent-dir');
-jest.mock('./fs-util');
 
-var importer = require('./index');
+var importer = require('./');
 var mockFsUtil = require('./fs-util');
 var mockFindParentDir = require('find-parent-dir');
 
 describe('Importer', function() {
   beforeEach(function() {
-    mockFsUtil.isDirectory.mockReturnValue(false).mockClear();
-    mockFsUtil.existsSync.mockReturnValue(true).mockClear();
+    mockFsUtil.existsSync = jest.fn();
     mockFindParentDir.sync.mockReturnValue('MOCK_PARENT_DIR').mockClear();
   });
 
   test('resolves to node_modules directory when first character is ~', function() {
-    mockFsUtil.isDirectory.mockReturnValue(true);
+    mockFsUtil.existsSync.mockReturnValue(true);
     expect(importer('~my-module', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/index'
     });
@@ -29,13 +27,15 @@ describe('Importer', function() {
 
     // url can not be resolved up to 10 level
     for (var i = 0; i < 10; i++) {
-      // short circuit evaluation due to mockFsUtil.isDirectory -> false
-      mockFsCheck = mockFsCheck.mockReturnValueOnce(false);
+      mockFsCheck = mockFsCheck
+        .mockReturnValueOnce(false) // directory import
+        .mockReturnValueOnce(false); // file import
+
       mockParentDirFinder = mockParentDirFinder.mockReturnValueOnce('MOCK_PARENT_DIR' + i);
     }
 
     // url finally found
-    mockFsCheck = mockFsCheck.mockReturnValueOnce(true);
+    mockFsCheck = mockFsCheck.mockReturnValueOnce(false).mockReturnValueOnce(true);
     mockParentDirFinder = mockParentDirFinder.mockReturnValueOnce('MOCK_PARENT_DIR_final');
 
     expect(importer('~my-module/test', '')).toEqual({
@@ -43,7 +43,7 @@ describe('Importer', function() {
     });
 
     expect(mockParentDirFinder.mock.calls.length).toBe(11);
-    expect(mockFsCheck.mock.calls.length).toBe(11);
+    expect(mockFsCheck.mock.calls.length).toBe(22);
   });
 
   test('return null when package file can not be resolved', function() {
@@ -56,6 +56,24 @@ describe('Importer', function() {
 
     expect(importer('~my-module/test.scss', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test.scss'
+    });
+  });
+
+  test('should support file imports', function() {
+    mockFsUtil.existsSync
+      .mockReturnValueOnce(false) // directory import
+      .mockReturnValueOnce(true); // file import
+
+    expect(importer('~my-module/test', '')).toEqual({
+      file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test'
+    });
+  });
+
+  test('should support directory imports', function() {
+    mockFsUtil.existsSync.mockReturnValueOnce(true); // directory import
+
+    expect(importer('~my-module/test', '')).toEqual({
+      file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test/index'
     });
   });
 });
