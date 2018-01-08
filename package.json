@@ -29,7 +29,7 @@
   },
   "jest": {
     "verbose": true,
-    "testRegex": "test\\.js$",
+    "testRegex": ".+\\.test.js$",
     "testEnvironment": "node",
     "coverageThreshold": {
       "global": {
