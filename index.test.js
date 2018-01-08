@@ -1,17 +1,18 @@
 jest.mock('find-parent-dir');
+jest.mock('fs');
 
 var importer = require('./');
-var mockFsUtil = require('./fs-util');
+var mockFs = require('fs');
 var mockFindParentDir = require('find-parent-dir');
 
 describe('Importer', function() {
   beforeEach(function() {
-    mockFsUtil.existsSync = jest.fn();
+    mockFs.existsSync.mockClear();
     mockFindParentDir.sync.mockReturnValue('MOCK_PARENT_DIR').mockClear();
   });
 
   test('resolves to node_modules directory when first character is ~', function() {
-    mockFsUtil.existsSync.mockReturnValue(true);
+    mockFs.existsSync.mockReturnValue(true);
     expect(importer('~my-module', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/index'
     });
@@ -22,7 +23,7 @@ describe('Importer', function() {
   });
 
   test('recursively resolve url until package has not been found', function() {
-    var mockFsCheck = mockFsUtil.existsSync,
+    var mockFsCheck = mockFs.existsSync,
     mockParentDirFinder = mockFindParentDir.sync;
 
     // url can not be resolved up to 10 level
@@ -52,7 +53,7 @@ describe('Importer', function() {
   });
 
   test('should resolve extensions', function() {
-    mockFsUtil.existsSync.mockReturnValueOnce(true);
+    mockFs.existsSync.mockReturnValueOnce(true);
 
     expect(importer('~my-module/test.scss', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test.scss'
@@ -60,7 +61,7 @@ describe('Importer', function() {
   });
 
   test('should support file imports', function() {
-    mockFsUtil.existsSync
+    mockFs.existsSync
       .mockReturnValueOnce(false) // directory import
       .mockReturnValueOnce(true); // file import
 
@@ -70,7 +71,7 @@ describe('Importer', function() {
   });
 
   test('should support directory imports', function() {
-    mockFsUtil.existsSync.mockReturnValueOnce(true); // directory import
+    mockFs.existsSync.mockReturnValueOnce(true); // directory import
 
     expect(importer('~my-module/test', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test/index'

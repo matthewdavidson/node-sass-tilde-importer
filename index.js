@@ -1,6 +1,6 @@
 var path = require('path');
 var findParentDir = require('find-parent-dir');
-var fsUtil = require('./fs-util');
+var fs = require('fs');
 
 function resolve(targetUrl, source) {
   var packageRoot = findParentDir.sync(source, 'node_modules');
@@ -10,10 +10,11 @@ function resolve(targetUrl, source) {
   }
 
   var filePath = path.resolve(packageRoot, 'node_modules', targetUrl);
+  var isPotentiallyDirectory = !path.extname(filePath);
 
-  if (fsUtil.isDirectory(filePath) && fsUtil.existsSync(filePath)) {
+  if (isPotentiallyDirectory && fs.existsSync(filePath)) {
     return path.resolve(filePath, 'index');
-  } else if (fsUtil.existsSync(path.dirname(filePath))) {
+  } else if (fs.existsSync(path.dirname(filePath))) {
     return filePath;
   }
 
