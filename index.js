@@ -22,9 +22,5 @@ function resolve(targetUrl, source) {
 }
 
 module.exports = function importer (url, prev, done) {
-  if (url[ 0 ] === '~') {
-    url = resolve(url.substr(1), prev);
-  }
-
-  return { file: url };
+  return (url[ 0 ] === '~') ? { file: resolve(url.substr(1), prev) } : null;
 };
