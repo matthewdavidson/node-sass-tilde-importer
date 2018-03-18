@@ -19,7 +19,7 @@ describe('Importer', function() {
   });
 
   test('does nothing when the first character isnt a ~', function() {
-    expect(importer('my-module', '')).toEqual({ file: 'my-module' });
+    expect(importer('my-module', '')).toEqual(null);
   });
 
   test('recursively resolve url until package has not been found', function() {
