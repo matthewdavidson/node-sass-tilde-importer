@@ -12,7 +12,7 @@ function resolve(targetUrl, source) {
   var filePath = path.resolve(packageRoot, 'node_modules', targetUrl);
   var isPotentiallyDirectory = !path.extname(filePath);
 
-  if (isPotentiallyDirectory && fs.existsSync(filePath)) {
+  if (isPotentiallyDirectory && fs.existsSync(path.resolve(filePath, 'index'))) {
     return path.resolve(filePath, 'index');
   } else if (fs.existsSync(path.dirname(filePath))) {
     return filePath;
