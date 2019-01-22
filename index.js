@@ -14,7 +14,7 @@ function resolve(targetUrl, source) {
 
   if (isPotentiallyDirectory) {
     if (fs.existsSync(filePath + '.scss')) {
-      return path.resolve(filePath, 'index');
+      return filePath + '.scss';
     }
 
     if (fs.existsSync(filePath)) {
