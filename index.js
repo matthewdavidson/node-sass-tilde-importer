@@ -13,7 +13,7 @@ function resolve(targetUrl, source) {
   var isPotentiallyDirectory = !path.extname(filePath);
 
   if (isPotentiallyDirectory) {
-    if (s.existsSync(filePath + '.scss')) {
+    if (fs.existsSync(filePath + '.scss')) {
       return path.resolve(filePath, 'index');
     }
 
