@@ -48,11 +48,11 @@ describe('Importer', function() {
     });
 
     expect(mockParentDirFinder.mock.calls.length).toBe(11);
-    expect(mockFsCheck.mock.calls.length).toBe(22);
+    expect(mockFsCheck.mock.calls.length).toBe(33);
   });
 
   test('return null when package file can not be resolved', function() {
-    mockFsCheck = mockFsCheck.mockReturnValue(false);
+    mockFs.existsSync.mockReturnValue(false);
     mockFindParentDir.sync.mockReturnValue(null);
     expect(importer('~my-module', '')).toEqual({ file: null });
   });
