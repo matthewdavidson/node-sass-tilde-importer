@@ -77,4 +77,13 @@ describe('Importer', function() {
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test/index'
     });
   });
+
+  test('should support directory imports', function() {
+    mockFs.existsSync.mockReturnValueOnce(true); // directory import
+    mockFs.writeFileSync(__dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test.scss', 'body { color: red; }');
+
+    expect(importer('~my-module/test', '')).toEqual({
+      file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test.scss'
+    });
+  });
 });
