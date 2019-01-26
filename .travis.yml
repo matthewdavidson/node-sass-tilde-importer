@@ -2,6 +2,7 @@ language: node_js
 
 install:
   - npm install -g codecov
+  - npm install
 
 node_js:
   - '8'
@@ -9,5 +10,5 @@ node_js:
   - '4'
 
 script:
-  - npm run test
+  - npm test
   - codecov
