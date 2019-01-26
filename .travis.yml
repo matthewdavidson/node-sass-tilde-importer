@@ -12,3 +12,7 @@ node_js:
 script:
   - npm test
   - codecov
+
+addons:
+  code_climate:
+    repo_token: 90cb5b097ceef6852983e1576ea181bfb2fbf07eb232f9651d073f90692850a0
