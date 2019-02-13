@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## UNRELEASED
 
 ### Changed
-- Drop node 4 support.
+- [#14](https://github.com/matthewdavidson/node-sass-tilde-importer/pull/14) Drop node 4 support.
 
 ## 1.0.2 - 2018-03-18
 ### Fixed
