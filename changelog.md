@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED
+
+### Changed
+- Drop node 4 support.
+
 ## 1.0.2 - 2018-03-18
 ### Fixed
 - [#3](https://github.com/matthewdavidson/node-sass-tilde-importer/pull/7) Support using tilde importer in an importer array
