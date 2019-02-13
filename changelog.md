@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - [#14](https://github.com/matthewdavidson/node-sass-tilde-importer/pull/14) Drop node 4 support.
+- [#11](https://github.com/matthewdavidson/node-sass-tilde-importer/pull/11) Resolve .scss extensions eagerly.
 
 ## 1.0.2 - 2018-03-18
 ### Fixed
