@@ -3,6 +3,9 @@ var findParentDir = require('find-parent-dir');
 var fs = require('fs');
 
 function resolve(targetUrl, source) {
+  // Use the current directory if the path is not set
+  if (source === 'stdin') source = process.cwd();
+
   var packageRoot = findParentDir.sync(source, 'node_modules');
 
   if (!packageRoot) {
