@@ -4,6 +4,9 @@
   "description": "A node-sass custom importer which turns ~ into absolute paths to the nearest parent node_modules directory.",
   "repository": "matthewdavidson/node-sass-tilde-importer",
   "main": "index.js",
+  "bin" : {
+    "node-sass-tilde-importer" : "./index.js"
+  },
   "scripts": {
     "test": "jest --coverage"
   },
