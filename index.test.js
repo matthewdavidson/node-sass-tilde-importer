@@ -12,7 +12,7 @@ describe('Importer', function() {
   });
 
   test('resolves to node_modules directory when first character is ~', function() {
-    mockFs.existsSync.mockReturnValueOnce(false).mockReturnValue(true);
+    mockFs.existsSync.mockReturnValue(true);
     expect(importer('~my-module', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/index'
     });
@@ -29,8 +29,8 @@ describe('Importer', function() {
     // url can not be resolved up to 10 level
     for (var i = 0; i < 10; i++) {
       mockFsCheck = mockFsCheck
-        .mockReturnValueOnce(false) // .scss import
         .mockReturnValueOnce(false) // directory import
+        .mockReturnValueOnce(false) // .scss import
         .mockReturnValueOnce(false); // file import
 
       mockParentDirFinder = mockParentDirFinder.mockReturnValueOnce('MOCK_PARENT_DIR' + i);
@@ -38,8 +38,8 @@ describe('Importer', function() {
 
     // url finally found
     mockFsCheck = mockFsCheck
-      .mockReturnValueOnce(false) // .scss import
       .mockReturnValueOnce(false) // directory import
+      .mockReturnValueOnce(false) // .scss import
       .mockReturnValueOnce(true); // file import
     mockParentDirFinder = mockParentDirFinder.mockReturnValueOnce('MOCK_PARENT_DIR_final');
 
@@ -59,8 +59,9 @@ describe('Importer', function() {
 
   test('should resolve extensions', function() {
     mockFs.existsSync
-      .mockReturnValueOnce(false) // .scss import
-      .mockReturnValueOnce(true); // directory import
+      .mockReturnValueOnce(true) // directory import
+      .mockReturnValueOnce(false) // .scss file import
+    ;
 
     expect(importer('~my-module/test.scss', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test.scss'
@@ -69,9 +70,19 @@ describe('Importer', function() {
 
   test('should support file imports', function() {
     mockFs.existsSync
-      .mockReturnValueOnce(false) // .scss import
       .mockReturnValueOnce(false) // directory import
-      .mockReturnValueOnce(true); // file import
+      .mockReturnValueOnce(true); // .scss file import
+
+    expect(importer('~my-module/test', '')).toEqual({
+      file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test'
+    });
+  });
+
+  test('should support partial imports', function() {
+    mockFs.existsSync
+      .mockReturnValueOnce(false) // directory import
+      .mockReturnValueOnce(false)  // .scss file import
+      .mockReturnValueOnce(true); // .scss partial import
 
     expect(importer('~my-module/test', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test'
@@ -80,8 +91,7 @@ describe('Importer', function() {
 
   test('should support directory imports', function() {
     mockFs.existsSync
-      .mockReturnValueOnce(false) // .scss import
-      .mockReturnValueOnce(true); // directory import
+      .mockReturnValueOnce(true);
 
     expect(importer('~my-module/test', '')).toEqual({
       file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test/index'
@@ -89,10 +99,13 @@ describe('Importer', function() {
   });
 
   test('should support file imports minus extension', function() {
-    mockFs.existsSync.mockReturnValueOnce(true); // .scss import
+    mockFs.existsSync
+      .mockReturnValueOnce(false) // directory import
+      .mockReturnValueOnce(true)  // .scss file import
+    ;
 
     expect(importer('~my-module/test', '')).toEqual({
-      file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test.scss'
+      file: __dirname + '/MOCK_PARENT_DIR/node_modules/my-module/test'
     });
   });
 });
