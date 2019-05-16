@@ -17,6 +17,13 @@ function resolve(targetUrl, source) {
       return filePath + '.scss';
     }
 
+    var partialName = '_' + path.basename(filePath) + '.scss';
+    var dir = path.dirname(filePath);
+    var partialPath = path.join(dir, partialName);
+    if (fs.existsSync(partialPath)) {
+      return partialPath;
+    }
+
     if (fs.existsSync(filePath)) {
       return path.resolve(filePath, 'index');
     }
